@@ -1,13 +1,9 @@
-import React from "react";
 import { useRef, useState } from "react";
 
 export default function ToDoList() {
-  const [todos, setTodos] = useState([]); 
+  const [todos, setTodos] = useState([]);
   const inputElement = useRef();
 
-  const addCheckbox = () => {
-    inputElement.current.setIsChecked(true);
-  };
   const handleSubmit = (e) => {
     e.preventDefault();
     const newTodo = {
@@ -19,7 +15,14 @@ export default function ToDoList() {
     inputElement.current.value = "";
   };
 
-  <button onClick={addCheckbox}> </button>;
+  const handleCheck = (id) => {
+    setTodos((prevTodos) =>
+      prevTodos.map((todo) =>
+        todo.id === id ? { ...todo, isCompleted: !todo.isCompleted } : todo,
+      ),
+    );
+  };
+
   return (
     <div>
       <form onSubmit={handleSubmit}>
@@ -28,12 +31,26 @@ export default function ToDoList() {
       </form>
 
       <div>
-        {todos.map((todo) => (
-          <li key={todo.id}>
-            <input type="checkbox" checked={todo.isCompleted}/>
-            <span>{todo.text}</span>
-          </li>
-        ))}
+        <ul className="list-none">
+          {todos.map((todo) => (
+            <li key={todo.id}>
+              <input
+                type="checkbox"
+                checked={todo.isCompleted}
+                onChange={() => handleCheck(todo.id)}
+              />
+              <span
+                className={`ml-3 text-lg ${
+                  todo.isCompleted
+                    ? "line-through text-gray-500"
+                    : "text-gray-800"
+                }`}
+              >
+                {todo.text}
+              </span>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );
